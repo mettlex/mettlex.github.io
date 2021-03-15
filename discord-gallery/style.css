@@ -1,0 +1,75 @@
+:root {
+  --primary-color: black;
+  --primary-bg-color: #292a2d;
+  --secondary-color: rgb(232, 234, 237);
+  --darker-secondary-color: #999999;
+}
+
+html,
+body {
+  background-color: var(--primary-bg-color);
+  color: var(--secondary-color);
+}
+
+#gallery {
+  max-width: 99vw;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+#gallery img,
+#gallery a {
+  margin: 0;
+  padding: 0;
+}
+
+#gallery img {
+  width: 100px;
+  height: 100px;
+}
+
+#form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+
+#form input,
+#form button {
+  width: 80vw;
+  height: 2rem;
+  margin: 1ch;
+  padding: 0px 2ch;
+  color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  border-radius: 1rem;
+  background-color: var(--primary-bg-color);
+}
+
+.controls {
+  display: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 2ch;
+  right: 2ch;
+}
+
+#zoom-in,
+#zoom-out {
+  margin: 0.2rem;
+  cursor: pointer;
+  background-color: var(--darker-secondary-color);
+}
+
+#gallery img.loading-img {
+  width: 2rem;
+  height: 2rem;
+}
