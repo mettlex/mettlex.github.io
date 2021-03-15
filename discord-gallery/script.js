@@ -38,7 +38,7 @@ const main = () => {
   const galleryURL = searchParams.get("g");
   const form = document.getElementById("form");
   const inputField = form.querySelector('input[name="url"]');
-  const btn = form.querySelector("button");
+  const showBtn = form.querySelector("#show-btn");
   const zoomInBtn = document.getElementById("zoom-in");
   const zoomOutBtn = document.getElementById("zoom-out");
   const paginationEl = document.getElementById("pagination");
@@ -140,7 +140,7 @@ const main = () => {
       "gallery",
     ).innerHTML = `<img class="loading-img" src="./img/loading.gif" alt="loading..." />`;
 
-    btn.disabled = true;
+    showBtn.disabled = true;
 
     const url = form.elements[0].value;
 
@@ -208,7 +208,7 @@ const main = () => {
       console.error(error);
     }
 
-    btn.disabled = false;
+    showBtn.disabled = false;
 
     searchParams.set("g", url);
 
@@ -226,6 +226,13 @@ const main = () => {
 
   if (galleryURL) {
     inputField.value = galleryURL;
+
+    if (searchParams.get("autoload") === "true") {
+      const id = setTimeout(() => {
+        showBtn.click();
+        clearTimeout(id);
+      }, 100);
+    }
   }
 
   let defaultThumnailWidth = 100;
