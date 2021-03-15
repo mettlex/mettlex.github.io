@@ -189,6 +189,8 @@ const main = () => {
         } else {
           alert("Invalid Page Number");
         }
+      } else {
+        displayedURLs = imageURLs;
       }
 
       applyMarkup(displayedURLs, currentThumnailWidth, currentThumnailHeight);
