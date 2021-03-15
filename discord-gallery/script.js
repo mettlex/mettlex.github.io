@@ -23,17 +23,115 @@ const applyMarkup = (imageURLs = [], width = 100, height = 100) => {
   lightGallery(galleryEl, {
     thumbnail: true,
   });
+
+  galleryEl.addEventListener("onBeforeOpen", () => {
+    galleryEl.style.display = "none";
+  });
+
+  galleryEl.addEventListener("onBeforeClose", () => {
+    galleryEl.style.display = "flex";
+  });
 };
 
 const main = () => {
-  const galleryURL = new URLSearchParams(location.search).get("g");
+  const searchParams = new URLSearchParams(location.search);
+  const galleryURL = searchParams.get("g");
   const form = document.getElementById("form");
   const inputField = form.querySelector('input[name="url"]');
   const btn = form.querySelector("button");
   const zoomInBtn = document.getElementById("zoom-in");
   const zoomOutBtn = document.getElementById("zoom-out");
+  const paginationEl = document.getElementById("pagination");
+  const pageInfoEl = document.getElementById("page-info");
+  const prevBtn = document.querySelector(".page-btn.prev");
+  const nextBtn = document.querySelector(".page-btn.next");
+  const galleryEl = document.getElementById("gallery");
 
+  const perPageLimit = 50;
   let imageURLs = [];
+  let displayedURLs = [];
+  let pages = 0;
+  let currentPage = parseInt(searchParams.get("page") || "1");
+  let pageCursor = (currentPage - 1) * perPageLimit;
+
+  let currentThumnailWidth = 100;
+  let currentThumnailHeight = 100;
+
+  nextBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    if (currentPage < pages) {
+      currentPage++;
+      pageCursor = (currentPage - 1) * perPageLimit;
+
+      const end = pageCursor + perPageLimit;
+
+      if (end < imageURLs.length + perPageLimit) {
+        displayedURLs = imageURLs.slice(pageCursor, end);
+
+        pageCursor = end;
+
+        applyMarkup(displayedURLs, currentThumnailWidth, currentThumnailHeight);
+
+        pageInfoEl.innerHTML = `${currentPage} / ${pages}`;
+
+        searchParams.set("page", currentPage);
+
+        const newRelativePathQuery =
+          window.location.pathname + "?" + searchParams.toString();
+
+        history.pushState(null, "", newRelativePathQuery);
+      }
+
+      if (currentPage === pages) {
+        nextBtn.style.visibility = "hidden";
+      }
+
+      prevBtn.style.visibility = "visible";
+
+      scrollTo({ top: galleryEl.offsetTop - 20 });
+    } else if (currentPage === pages) {
+      nextBtn.style.visibility = "hidden";
+    }
+  });
+
+  prevBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    if (currentPage > 1) {
+      currentPage--;
+      pageCursor = (currentPage - 1) * perPageLimit;
+
+      const end = pageCursor + perPageLimit;
+
+      if (end < imageURLs.length + perPageLimit) {
+        displayedURLs = imageURLs.slice(pageCursor, end);
+
+        pageCursor = end;
+
+        applyMarkup(displayedURLs, currentThumnailWidth, currentThumnailHeight);
+
+        pageInfoEl.innerHTML = `${currentPage} / ${pages}`;
+
+        searchParams.set("page", currentPage);
+
+        const newRelativePathQuery =
+          window.location.pathname + "?" + searchParams.toString();
+
+        history.pushState(null, "", newRelativePathQuery);
+      }
+
+      if (currentPage === 1) {
+        prevBtn.style.visibility = "hidden";
+      }
+
+      nextBtn.style.visibility = "visible";
+
+      scrollTo({ top: galleryEl.offsetTop - 20 });
+    } else if (currentPage === 1) {
+      prevBtn.style.visibility = "hidden";
+    }
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -63,15 +161,52 @@ const main = () => {
     try {
       imageURLs = data.split("\n").filter((x) => x);
 
-      applyMarkup(imageURLs);
+      if (imageURLs.length > perPageLimit) {
+        pages =
+          Math.floor(imageURLs.length / perPageLimit) +
+          (imageURLs.length % perPageLimit > 0 ? 1 : 0);
+
+        if (
+          typeof currentPage === "number" &&
+          currentPage > 0 &&
+          currentPage <= pages
+        ) {
+          pageInfoEl.innerHTML = `${currentPage} / ${pages}`;
+
+          displayedURLs = imageURLs.slice(
+            pageCursor,
+            pageCursor + perPageLimit,
+          );
+
+          paginationEl.style.display = "flex";
+
+          searchParams.set("page", currentPage);
+
+          const newRelativePathQuery =
+            window.location.pathname + "?" + searchParams.toString();
+
+          history.pushState(null, "", newRelativePathQuery);
+        } else {
+          alert("Invalid Page Number");
+        }
+      }
+
+      applyMarkup(displayedURLs, currentThumnailWidth, currentThumnailHeight);
+
+      if (currentPage === pages) {
+        nextBtn.style.visibility = "hidden";
+      } else if (currentPage === 1) {
+        prevBtn.style.visibility = "hidden";
+      } else {
+        nextBtn.style.visibility = "visible";
+        prevBtn.style.visibility = "visible";
+      }
     } catch (error) {
       alert("Unable to get parse for links. Please enter a correct URL.");
       console.error(error);
     }
 
     btn.disabled = false;
-
-    const searchParams = new URLSearchParams(window.location.search);
 
     searchParams.set("g", url);
 
@@ -98,9 +233,9 @@ const main = () => {
   zoomInBtn.addEventListener("click", (event) => {
     event.preventDefault();
     zoomLevel++;
-    const currentThumnailWidth = defaultThumnailWidth * zoomLevel;
-    const currentThumnailHeight = defaultThumnailHeight * zoomLevel;
-    applyMarkup(imageURLs, currentThumnailWidth, currentThumnailHeight);
+    currentThumnailWidth = defaultThumnailWidth * zoomLevel;
+    currentThumnailHeight = defaultThumnailHeight * zoomLevel;
+    applyMarkup(displayedURLs, currentThumnailWidth, currentThumnailHeight);
   });
 
   zoomOutBtn.addEventListener("click", (event) => {
@@ -109,9 +244,9 @@ const main = () => {
       return;
     }
     zoomLevel--;
-    const currentThumnailWidth = defaultThumnailWidth * zoomLevel;
-    const currentThumnailHeight = defaultThumnailHeight * zoomLevel;
-    applyMarkup(imageURLs, currentThumnailWidth, currentThumnailHeight);
+    currentThumnailWidth = defaultThumnailWidth * zoomLevel;
+    currentThumnailHeight = defaultThumnailHeight * zoomLevel;
+    applyMarkup(displayedURLs, currentThumnailWidth, currentThumnailHeight);
   });
 };
 

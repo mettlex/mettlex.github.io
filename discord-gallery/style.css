@@ -9,6 +9,7 @@ html,
 body {
   background-color: var(--primary-bg-color);
   color: var(--secondary-color);
+  scroll-behavior: smooth;
 }
 
 #gallery {
@@ -58,18 +59,61 @@ body {
   justify-content: center;
   align-items: center;
   position: fixed;
-  top: 2ch;
-  right: 2ch;
+  top: 0;
+  right: 0;
 }
 
 #zoom-in,
 #zoom-out {
-  margin: 0.2rem;
+  margin: 0 0.2rem 0 0;
   cursor: pointer;
-  background-color: var(--darker-secondary-color);
+  background-color: var(--secondary-color);
 }
 
 #gallery img.loading-img {
   width: 2rem;
   height: 2rem;
+}
+
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#pagination {
+  display: none;
+  /* display: flex; */
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  margin-top: 10rem;
+  margin-bottom: 10rem;
+}
+
+.page-btn {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  margin: 1ch;
+  padding: 0;
+  color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  border-radius: 50%;
+  background-color: var(--primary-bg-color);
+  outline: none;
+  cursor: pointer;
+}
+
+.page-btn:hover {
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
+}
+
+#page-info {
+  margin-left: 1ch;
+  margin-right: 1ch;
+  width: 6ch;
 }

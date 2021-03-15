@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
     <title>Photo Gallery | Discord</title>
     <link rel="preload" href="./style.css" as="style" />
     <link rel="stylesheet" href="./style.css" />
@@ -25,7 +28,14 @@
       <button type="submit">show</button>
     </form>
 
-    <div id="gallery"></div>
+    <div class="gallery-container">
+      <div id="gallery"></div>
+      <div id="pagination">
+        <button class="page-btn prev">&#x3C;</button>
+        <div id="page-info">1 / 50</div>
+        <button class="page-btn next">&#x3E;</button>
+      </div>
+    </div>
 
     <script src="./lightgallery/jquery.min.js"></script>
     <script src="./lightgallery/lightgallery.js"></script>
