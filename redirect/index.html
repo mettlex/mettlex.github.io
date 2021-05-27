@@ -10,9 +10,10 @@
     <h1 style="text-align: center">Please wait. Redirecting...</h1>
 
     <script>
-      window.location.href =
+      window.location.href = decodeURIComponent(
         new URL(window.location.href).searchParams.get("a") ||
-        "http://mettlex.github.io/";
+          "http://mettlex.github.io/",
+      );
     </script>
   </body>
 </html>
